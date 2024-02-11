@@ -19,7 +19,7 @@ def get_flight_url(departure_city, destination_city, departure_date, travellers,
     return url_array
 
 def get_best_flights(user_input):
-    token_flight = "GFylV9yaVKgIlE4p3AO8g7xRhEOz"
+    token_flight = "91Zh8l0QpgeelbwuGRcyF1CUxNzB"
 
     headers_flight = {"Authorization" : "Bearer " + token_flight}
 
