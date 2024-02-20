@@ -17,16 +17,16 @@ def date_format(date_string):
     print(date_string, flush=True)
 
     if (date_string == 'tomorrow'):
-        return (parser.parse(date_string) + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+        return (datetime.date.today() + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
 
     if (date_string == 'today'):
-        return (parser.parse(date_string)).strftime("%Y-%m-%d")
+        return (datetime.date.today()).strftime("%Y-%m-%d")
     
     if (date_string == 'next week'):
-        return (parser.parse(date_string) + datetime.timedelta(days=7)).strftime("%Y-%m-%d")
+        return (datetime.date.today() + datetime.timedelta(days=7)).strftime("%Y-%m-%d")
     
     if (date_string == 'next month'):
-        return (parser.parse(date_string) + datetime.timedelta(days=30)).strftime("%Y-%m-%d")
+        return (datetime.date.today() + datetime.timedelta(days=30)).strftime("%Y-%m-%d")
 
     return parser.parse(date_string).strftime("%Y-%m-%d")
 
@@ -34,7 +34,7 @@ def city_converter(city_name):
     city_name = string.capwords(city_name)
     with open("airports.json", "r") as read_file:
         ap_data = json.load(read_file)
-        
+            
         iata_codes = []
         for i in ap_data:
             if i["city"] == city_name:

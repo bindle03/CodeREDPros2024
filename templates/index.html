@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChatGPT-like Interface</title>
+    <title>VPT Enflighten</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/vpt_logo.png') }}">
 </head>
 <body class="dark-theme">
     <div class="container">
@@ -86,7 +87,6 @@
 
                 console.log(data)
 
-                document.querySelector('.chat-message').scrollIntoView({ behavior: 'smooth' });  
                 data = data['best_flights'];              
                 for (let i = 0; i < data.length; i++) {
                     
@@ -148,12 +148,12 @@
                             <div class="timeline-block">
                                 <div class="depart">
                                     <p>Depart ${segments[j]['departure']['iataCode']} - ${formatedDeparture.getHours()}:${formatedDeparture.getMinutes() < 10 ? "0" + formatedDeparture.getMinutes() : formatedDeparture.getMinutes()} ${timezone}</p>
-                                    <p>${formatedDeparture.getMonth()}/${formatedDeparture.getDate()}/${formatedDeparture.getFullYear()}</p>
+                                    <p>${formatedDeparture.getMonth() + 1}/${formatedDeparture.getDate()}/${formatedDeparture.getFullYear()}</p>
                                 </div>
                                 <span style="font-size: 5rem">&#8594;</span>
                                 <div class="arrive">
                                     <p>Arrival ${segments[j]['arrival']['iataCode']} at ${formatedArrival.getHours()}:${formatedArrival.getMinutes() < 10 ? "0" + formatedArrival.getMinutes() : formatedArrival.getMinutes()} ${timezone}</p>
-                                    <p>${formatedArrival.getMonth()}/${formatedArrival.getDate()}/${formatedArrival.getFullYear()}</p>
+                                    <p>${formatedArrival.getMonth() + 1}/${formatedArrival.getDate()}/${formatedArrival.getFullYear()}</p>
                                 </div>        
                             </div>
                         `;

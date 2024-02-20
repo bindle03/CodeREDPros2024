@@ -14,12 +14,12 @@ def home():
 
 
 @app.route('/send', methods=['POST'])
-def send():
+async def send():
     input = json.loads(request.data)['inputText']
 
 
     try:
-        best_flights = get_best_flights(input)
+        best_flights = await get_best_flights(input)
     except Exception as e:
         print(e, flush=True)
 
@@ -30,7 +30,7 @@ def send():
 
 
     # Sort the best_flights by price
-    best_flights.sort(key=lambda x: x['price']['grandTotal'], reverse=False)
+    best_flights = sorted(best_flights, key=lambda x: x['price']['grandTotal'])
 
     return jsonify({
         'ok': True,

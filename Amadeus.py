@@ -2,6 +2,17 @@ import requests
 from converter import *
 from prompt_to_json import *
 
+async def get_token():
+    url = "https://test.api.amadeus.com/v1/security/oauth2/token"
+    payload = f"grant_type=client_credentials&client_id=4Cz3Xv8iQ4o4yl3LpGxXQqMbADgvt3E7&client_secret=tK1jdQ2N4JpdV8fR"
+    headers = {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    return response.json()['access_token']
+
 def get_flight_url(departure_city, destination_city, departure_date, travellers, return_date = None, baggage_quantity = 1):
     departure_id_array = city_converter(departure_city)
 
@@ -18,10 +29,9 @@ def get_flight_url(departure_city, destination_city, departure_date, travellers,
 
     return url_array
 
-def get_best_flights(user_input):
-    token_flight = "91Zh8l0QpgeelbwuGRcyF1CUxNzB"
+async def get_best_flights(user_input):
 
-    headers_flight = {"Authorization" : "Bearer " + token_flight}
+    headers_flight = {"Authorization" : "Bearer " + await get_token()}
 
 
     user_data = extract_to_json(user_input)
