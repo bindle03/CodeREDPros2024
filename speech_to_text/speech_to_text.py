@@ -3,7 +3,7 @@ import pyaudio
 import wave
 import dotenv
 
-config = dotenv.dotenv_values("/.env")
+config = dotenv.dotenv_values("./.env")
 
 def speech_to_audio():
     chunk = 1024  # Record in chunks of 1024 samples
@@ -49,7 +49,7 @@ def speech_to_audio():
 
 def audio_to_input():
     filename = speech_to_audio()
-    client = OpenAI(api_key=config['OPENAI_API_KEY'])
+    client = OpenAI(api_key=config['OPEN_API'])
 
     audio_file= open(filename, "rb")
     transcript = client.audio.translations.create(
