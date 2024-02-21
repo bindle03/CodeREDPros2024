@@ -21,6 +21,9 @@
                 </div>
             </div>
         </div>
+
+        <audio src="" id="audio"></audio>
+
         <form class="message-form">
             <div style="width: 100%; margin-bottom: 5px;">
                 <input type="text" id="input-text" name="input-text" class="form-control" placeholder="Type your message...">
@@ -33,7 +36,7 @@
         const form = document.querySelector('.message-form');
 
 
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const inputText = document.getElementById('input-text').value;
             
@@ -71,7 +74,7 @@
             .then(response => response.json())
             .then(data => {
                 
-                if (!data.ok) {
+                if (data['best_flights'].length == 0) {
                     const botMessage = document.createElement('div');
                     botMessage.classList.add('chat-message');
                     botMessage.innerHTML = `
@@ -94,24 +97,8 @@
                     botMessage.classList.add('chat-message');
 
                     // Cast price to a number
-                    let price = parseFloat(data[i]['price']['total']).toFixed(2);
+                    let price = parseFloat(data[i]['price']['grandTotal']).toFixed(2);
                     let currency = data[i]['price']['currency'];
-
-                    if (currency != 'USD') {
-                        const api_key = "0ec39546577a007a413f51c1"
-
-                        const money_api_url = `https://v6.exchangerate-api.com/v6/${api_key}/pair/${currency}/USD/${price}`
-
-                        fetch(money_api_url, {
-                            method: 'GET',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        }).then(response => response.json()).then(data => {
-                            price = data['conversion_result']['value'].toFixed(2);
-                        })
-
-                    }
 
                     let segments = data[i]['itineraries'][0]['segments'];
                     let numberOfSegments = segments.length;

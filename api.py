@@ -1,12 +1,10 @@
 # app/routes.py
 from flask import Flask, render_template, jsonify, request
 from Amadeus import *
-from speech_to_text.speech_to_text import audio_to_input
+from speech_to_text.speech_to_text import *
+
 
 app = Flask(__name__)
-
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 
-
 
 @app.route('/')
 def home():
@@ -17,37 +15,25 @@ def home():
 async def send():
     input = json.loads(request.data)['inputText']
 
-
     try:
         best_flights = await get_best_flights(input)
     except Exception as e:
-        print(e, flush=True)
+        print("API exception", e, flush=True)
 
         return jsonify({
             'ok': False,
             'message': "Can you provide more information? I need a departure city, a destination city, and a departure date to find a flight."
         })
 
+    print(len(best_flights), flush=True)
 
-    # Sort the best_flights by price
     best_flights = sorted(best_flights, key=lambda x: x['price']['grandTotal'])
 
+    # Sort the best_flights by price
     return jsonify({
         'ok': True,
         'best_flights': best_flights[:10]
     })
-
-@app.route('/record', methods=['GET'])
-def record():
-
-    transcript = audio_to_input()
-
-    return {
-        'ok': True,
-        'transcription': transcript
-    
-    }
-
 
 if __name__ == '__main__':
     app.run(debug=True)

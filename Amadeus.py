@@ -23,7 +23,7 @@ def get_flight_url(departure_city, destination_city, departure_date, travellers,
     url_array = []
     for departure_id in departure_id_array:
         for destination_id in destination_id_array:
-            url = f"https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode={departure_id}&destinationLocationCode={destination_id}&departureDate={departure_date}&adults={travellers}&nonStop=false&max=250"
+            url = f"https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode={departure_id}&destinationLocationCode={destination_id}&departureDate={departure_date}&adults={travellers}&nonStop=false&max=5"
             if (return_date): url += f"&returnDate={return_date}"
             url_array.append(url)
 
@@ -32,7 +32,6 @@ def get_flight_url(departure_city, destination_city, departure_date, travellers,
 async def get_best_flights(user_input):
 
     headers_flight = {"Authorization" : "Bearer " + await get_token()}
-
 
     user_data = extract_to_json(user_input)
 
@@ -47,11 +46,30 @@ async def get_best_flights(user_input):
 
     for req_url in req_url_array:
         response_flight = requests.get(req_url, headers=headers_flight)
+
         
         if 'data' in response_flight.json():
+
             best_flights_all += response_flight.json()['data']
+
+
         else:
             print(response_flight.json())
             print("Error: 'data' key not found in the response JSON")
+
+    for flight in best_flights_all:
+        if (flight['price']['currency'] != 'USD'):
+
+            money_api_url = f"https://v6.exchangerate-api.com/v6/0ec39546577a007a413f51c1/pair/{flight['price']['currency']}/USD/{flight['price']['grandTotal']}"
+
+            headers = {
+                'Content-Type': 'application/json'
+            }
+
+            price = requests.get(money_api_url, headers=headers).json()['conversion_result']
+
+            flight['price']['grandTotal'] = "{:.2f}".format(price)
+            flight['price']['currency'] = "USD"
+
 
     return best_flights_all
