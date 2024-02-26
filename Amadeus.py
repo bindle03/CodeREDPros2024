@@ -1,6 +1,7 @@
 import requests
 from converter import *
 from prompt_to_json import *
+from test import get_chat_input
 
 async def get_token():
     url = "https://test.api.amadeus.com/v1/security/oauth2/token"

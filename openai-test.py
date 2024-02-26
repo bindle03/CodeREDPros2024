@@ -1,6 +1,6 @@
 import json
 from openai import OpenAI
-client = OpenAI(api_key='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')
+client = OpenAI(api_key='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')
 
 faq_data = [{
     "question": "How can I get a copy of my invoice or receipt for my subscription payment?",

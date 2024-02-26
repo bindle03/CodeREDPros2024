@@ -6,6 +6,7 @@ from langchain_core.pydantic_v1 import BaseModel
 from langchain_openai import ChatOpenAI
 from langchain.chains import create_extraction_chain
 from dotenv import dotenv_values
+
 import datetime
 
 config = dotenv_values(".env")
@@ -24,19 +25,36 @@ def extract_to_json(userInput) -> dict[str, any]:
 
     schema = {
         "properties": {
-            "departure": {"type": "string"},
-            "destination": {"type": "string"},
-            "departure_date": {"type": "string"},
-            "return_date": {"type": "string"},
-            "baggage_quantity": {"type": "integer"},
-            "travellers": {"type": "integer"},          
+            "destination": {
+                "type": "string", 
+                "description": "The city you are travelling to"
+            },
+            "departure": {
+                "type": "string", 
+                "description": "The city you are departing from"
+            },
+            "departure_date": {
+                "type": "string", 
+                "description": "Today's date is " + str(datetime.date.today()) + " the format should be YYYY-MM-DD"
+            },
+            "return_date": {
+                "type": "string", 
+                "description": "Today's date is " + str(datetime.date.today()) + " the format should be YYYY-MM-DD"
+            },
+            "baggage_quantity": {
+                "type": "integer"
+            },
+            "travellers": {
+                "type": "integer", "description": "The number of travellers always include yourself"
+            },          
         },
+        # "required": ["departure", "destination", "departure_date"],
     }
 
     
-
-    chain = create_extraction_chain(schema, llm)
+    chain = create_extraction_chain(schema, llm=llm)
     res = chain.invoke(userInput)
+
 
     if (type(res['text']) == list) : return res['text'][0]
 
@@ -44,4 +62,6 @@ def extract_to_json(userInput) -> dict[str, any]:
 
     return res['text']
 
-# print(extract_to_json("I want to fly from Paris to New York tomorrow"))
+print(extract_to_json("From Houston"))
+
+# 
