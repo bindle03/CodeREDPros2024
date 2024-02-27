@@ -15,19 +15,7 @@ def get_city_url(city_name):
 def date_format(date_string):
 
     print(date_string, flush=True)
-
-    if (date_string == 'tomorrow'):
-        return (datetime.date.today() + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
-
-    if (date_string == 'today'):
-        return (datetime.date.today()).strftime("%Y-%m-%d")
     
-    if (date_string == 'next week'):
-        return (datetime.date.today() + datetime.timedelta(days=7)).strftime("%Y-%m-%d")
-    
-    if (date_string == 'next month'):
-        return (datetime.date.today() + datetime.timedelta(days=30)).strftime("%Y-%m-%d")
-
     return parser.parse(date_string).strftime("%Y-%m-%d")
 
 def city_converter(city_name):
