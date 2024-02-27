@@ -3,9 +3,9 @@ import sys
 
 import openai
 from langchain.chains import ConversationalRetrievalChain, RetrievalQA
-from langchain_openai import ChatOpenAI
-from langchain_community.document_loaders import DirectoryLoader, TextLoader
-from langchain_openai import OpenAIEmbeddings
+from langchain.chat_models import ChatOpenAI
+from langchain.document_loaders import DirectoryLoader, TextLoader
+from langchain.embeddings import OpenAIEmbeddings
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.indexes.vectorstore import VectorStoreIndexWrapper
 from langchain.llms import OpenAI
@@ -26,8 +26,8 @@ if PERSIST and os.path.exists("persist"):
   vectorstore = Chroma(persist_directory="persist", embedding_function=OpenAIEmbeddings())
   index = VectorStoreIndexWrapper(vectorstore=vectorstore)
 else:
-  loader = TextLoader("data/flightTickSaleConversation.txt") # Use this line if you only need data.txt
-#   loader = DirectoryLoader("data/")
+  #loader = TextLoader("data/data.txt") # Use this line if you only need data.txt
+  loader = DirectoryLoader("data/")
   if PERSIST:
     index = VectorstoreIndexCreator(vectorstore_kwargs={"persist_directory":"persist"}).from_loaders([loader])
   else:
@@ -54,7 +54,6 @@ def get_chat_input(query):
   result = chain({"question": query, 'chat_history': []})
   return result['answer']
 
-print(get_chat_input("{'destination': 'New York', 'departure_date': '2024-03-08', 'travellers': 3}"))
 
 
 # chat_history = []

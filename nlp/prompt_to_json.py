@@ -9,7 +9,7 @@ from dotenv import dotenv_values
 
 import datetime
 
-config = dotenv_values(".env")
+config = dotenv_values(".env") | dotenv_values("../.env")
 
 llm = ChatOpenAI(openai_api_key=config['OPEN_API'], model="gpt-3.5-turbo")
 
@@ -25,13 +25,13 @@ def extract_to_json(userInput) -> dict[str, any]:
 
     schema = {
         "properties": {
-            "destination": {
-                "type": "string", 
-                "description": "The city you are travelling to"
-            },
             "departure": {
                 "type": "string", 
-                "description": "The city you are departing from"
+                "description": "This has to be the city you are departing from, if not provided it will be assumed to be Houston."
+            },
+            "destination": {
+                "type": "string", 
+                "description": "This has to be the city you are travelling to, if a country is provided it will be assumed to be the capital city of that country, ex: if England London."
             },
             "departure_date": {
                 "type": "string", 
@@ -44,11 +44,14 @@ def extract_to_json(userInput) -> dict[str, any]:
             "baggage_quantity": {
                 "type": "integer"
             },
-            "travellers": {
-                "type": "integer", "description": "The number of travellers always include yourself"
-            },          
+            "adults": {
+                "type": "integer", "description": "The number of adults travelling with you, if not specified it will be assumed to be 1, and if the not specified as children it will be assumed to be an adult."
+            },
+            "children": {
+                "type": "integer", "description": "The number of children travelling with you"
+            }
         },
-        # "required": ["departure", "destination", "departure_date"],
+        "required": ["departure"],
     }
 
     
@@ -62,6 +65,4 @@ def extract_to_json(userInput) -> dict[str, any]:
 
     return res['text']
 
-print(extract_to_json("From Houston"))
-
-# 
+# print(extract_to_json("I and two adults each has two children want to travel to Spain"))

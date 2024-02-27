@@ -74,6 +74,20 @@
             .then(response => response.json())
             .then(data => {
                 
+                if (data['missing']) {
+                    const botMessage = document.createElement('div');
+                    botMessage.classList.add('chat-message');
+                    botMessage.innerHTML = `
+                        <div class="chat-message-content bot-message">
+                            <p>${data.message}</p>
+                        </div>
+                    `;
+                    chatContainer.appendChild(botMessage);
+                    document.querySelector('#submit-btn').disabled = false;
+                    document.querySelector('.logo').src = "{{ url_for('static', filename='images/vpt_logo.jpg') }}"
+                    return;
+                }
+
                 if (data['best_flights'].length == 0) {
                     const botMessage = document.createElement('div');
                     botMessage.classList.add('chat-message');
@@ -133,12 +147,12 @@
                         itinerariesBlock.innerHTML += `
                             ${imgLink}
                             <div class="timeline-block">
-                                <div class="depart">
+                                <div class="depart flight-info">
                                     <p>Depart ${segments[j]['departure']['iataCode']} - ${formatedDeparture.getHours()}:${formatedDeparture.getMinutes() < 10 ? "0" + formatedDeparture.getMinutes() : formatedDeparture.getMinutes()} ${timezone}</p>
                                     <p>${formatedDeparture.getMonth() + 1}/${formatedDeparture.getDate()}/${formatedDeparture.getFullYear()}</p>
                                 </div>
                                 <span style="font-size: 5rem">&#8594;</span>
-                                <div class="arrive">
+                                <div class="arrive flight-info">
                                     <p>Arrival ${segments[j]['arrival']['iataCode']} at ${formatedArrival.getHours()}:${formatedArrival.getMinutes() < 10 ? "0" + formatedArrival.getMinutes() : formatedArrival.getMinutes()} ${timezone}</p>
                                     <p>${formatedArrival.getMonth() + 1}/${formatedArrival.getDate()}/${formatedArrival.getFullYear()}</p>
                                 </div>        

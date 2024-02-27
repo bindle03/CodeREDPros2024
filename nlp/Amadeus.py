@@ -1,7 +1,11 @@
 import requests
-from converter import *
-from prompt_to_json import *
-from test import get_chat_input
+from nlp.converter import *
+from nlp.prompt_to_json import *
+from nlp.conversation import *
+
+class FieldException(Exception):
+    def __init__(self, data):
+        self.data = data
 
 async def get_token():
     url = "https://test.api.amadeus.com/v1/security/oauth2/token"
@@ -14,7 +18,7 @@ async def get_token():
 
     return response.json()['access_token']
 
-def get_flight_url(departure_city, destination_city, departure_date, travellers, return_date = None, baggage_quantity = 1):
+def get_flight_url(departure_city, destination_city, departure_date, travellers, return_date = None):
     departure_id_array = city_converter(departure_city)
 
     destination_id_array = city_converter(destination_city)
@@ -30,14 +34,14 @@ def get_flight_url(departure_city, destination_city, departure_date, travellers,
 
     return url_array
 
-async def get_best_flights(user_input):
+async def get_best_flights(user_input, chat_history = []):
 
     headers_flight = {"Authorization" : "Bearer " + await get_token()}
 
     user_data = extract_to_json(user_input)
 
-    if (not user_data['departure_date'] or not user_data['departure'] or not user_data['destination']):
-        raise Exception("Error: Required fields not found in the user input")
+    if (not user_data.get('departure_date', None) or not user_data.get('departure', None) or not user_data.get('destination', None)):
+        raise FieldException(get_chat_output(json.dumps(user_data), chat_history))
 
     req_url_array = get_flight_url(user_data['departure'], user_data['destination'], user_data['departure_date'], user_data.get('travellers', 1))
 
@@ -50,7 +54,6 @@ async def get_best_flights(user_input):
 
         
         if 'data' in response_flight.json():
-
             best_flights_all += response_flight.json()['data']
 
 

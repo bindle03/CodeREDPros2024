@@ -32,7 +32,7 @@ def date_format(date_string):
 
 def city_converter(city_name):
     city_name = string.capwords(city_name)
-    with open("airports.json", "r") as read_file:
+    with open("nlp/data/airports.json", "r") as read_file:
         ap_data = json.load(read_file)
             
         iata_codes = []
