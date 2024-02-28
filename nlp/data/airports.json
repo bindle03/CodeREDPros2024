@@ -85,7 +85,7 @@
   },
   {
     "name": "Dallas Fort Worth Intl",
-    "city": "Dallas-Fort Worth",
+    "city": "Dallas",
     "country": "United States",
     "iata_code": "DFW",
     "_geoloc": {
@@ -2437,7 +2437,7 @@
   },
   {
     "name": "Raleigh Durham Intl",
-    "city": "Raleigh-durham",
+    "city": "Raleigh",
     "country": "United States",
     "iata_code": "RDU",
     "_geoloc": {

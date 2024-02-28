@@ -27,11 +27,11 @@ def extract_to_json(userInput) -> dict[str, any]:
         "properties": {
             "departure": {
                 "type": "string", 
-                "description": "This has to be the city you are departing from, if not provided it will be assumed to be Houston."
+                "description": "The name of the city that the user is departing from, leave out if not provided"
             },
             "destination": {
                 "type": "string", 
-                "description": "This has to be the city you are travelling to, if a country is provided it will be assumed to be the capital city of that country, ex: if England London."
+                "description": "This name of the city that the user is travelling to, leave out if not provided"
             },
             "departure_date": {
                 "type": "string", 
@@ -45,13 +45,12 @@ def extract_to_json(userInput) -> dict[str, any]:
                 "type": "integer"
             },
             "adults": {
-                "type": "integer", "description": "The number of adults travelling with you, if not specified it will be assumed to be 1, and if the not specified as children it will be assumed to be an adult."
+                "type": "integer", "description": "The number of adults travelling with you, if not specified it will be assumed to be 1."
             },
             "children": {
                 "type": "integer", "description": "The number of children travelling with you"
             }
         },
-        "required": ["departure"],
     }
 
     

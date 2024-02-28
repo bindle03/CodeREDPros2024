@@ -18,7 +18,7 @@ async def get_token():
 
     return response.json()['access_token']
 
-def get_flight_url(departure_city, destination_city, departure_date, travellers, return_date = None):
+def get_flight_url(departure_city, destination_city, departure_date, adults = 1, children = 0, return_date = None):
     departure_id_array = city_converter(departure_city)
 
     destination_id_array = city_converter(destination_city)
@@ -28,8 +28,11 @@ def get_flight_url(departure_city, destination_city, departure_date, travellers,
     url_array = []
     for departure_id in departure_id_array:
         for destination_id in destination_id_array:
-            url = f"https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode={departure_id}&destinationLocationCode={destination_id}&departureDate={departure_date}&adults={travellers}&nonStop=false&max=5"
+            url = f"https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode={departure_id}&destinationLocationCode={destination_id}&departureDate={departure_date}&adults={adults}&currencyCode=USD&nonStop=false&max=5"
             if (return_date): url += f"&returnDate={return_date}"
+            if (children): url += f"&children={children}"
+
+
             url_array.append(url)
 
     return url_array
@@ -60,20 +63,6 @@ async def get_best_flights(user_input, chat_history = []):
         else:
             print(response_flight.json())
             print("Error: 'data' key not found in the response JSON")
-
-    for flight in best_flights_all:
-        if (flight['price']['currency'] != 'USD'):
-
-            money_api_url = f"https://v6.exchangerate-api.com/v6/0ec39546577a007a413f51c1/pair/{flight['price']['currency']}/USD/{flight['price']['grandTotal']}"
-
-            headers = {
-                'Content-Type': 'application/json'
-            }
-
-            price = requests.get(money_api_url, headers=headers).json()['conversion_result']
-
-            flight['price']['grandTotal'] = "{:.2f}".format(price)
-            flight['price']['currency'] = "USD"
 
 
     return best_flights_all

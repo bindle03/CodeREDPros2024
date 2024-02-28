@@ -17,7 +17,6 @@ def home():
 async def send():
     input = json.loads(request.data)['inputText']
     chat_history = session.get('chat_history', [])
-    print(chat_history, flush=True)
 
     if (chat_history != []):
         input = get_new_input(input, chat_history)
@@ -38,11 +37,13 @@ async def send():
             'message': e.data.get('answer')
         })
 
+    print(session.get('chat_history'), flush=True)
     session.clear()
 
     print(len(best_flights), flush=True)
 
-    best_flights = sorted(best_flights, key=lambda x: x['price']['grandTotal'])
+    best_flights = sorted(best_flights, key=lambda x: float(x['price']['grandTotal']))
+
 
     # Sort the best_flights by price
     return jsonify({
