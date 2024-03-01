@@ -1,11 +1,12 @@
 # app/routes.py
 from flask import Flask, render_template, jsonify, request, session
 from nlp.Amadeus import *
-
+import dotenv
 
 app = Flask(__name__)
 app.secret_key = 'secret'
 
+config = dotenv.dotenv_values()
 
 @app.route('/')
 def home():
@@ -53,4 +54,4 @@ async def send():
     })
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=os.environ.get('PORT', 5000), host='0.0.0.0')
