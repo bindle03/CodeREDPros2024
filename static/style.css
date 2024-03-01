@@ -8,7 +8,10 @@ body.dark-theme {
     text-align: center;
 }
 
-.overlay {
+
+.segment-time {
+    opacity: 0.8;
+    font-size: small;
 }
 
 .chat-container {
