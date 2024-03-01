@@ -20,3 +20,22 @@
 - Create a functioning chatbox website with applealing UI
 - Manage large flights dataset in order to give an appropriate response.
 - Implement a feature that transfer speech to text input.
+
+# How to use the program
+- Clone the project by 
+```bash
+git clone https://github.com/bindle03/CodeREDPros2024.git
+cd CodeREDPros2024
+```
+- Install the dependencies
+```bash
+pip install -r requirements.txt # May need to install the C++ build tools
+```
+- Create a .env file
+```python
+OPEN_API= # Your OpenAI API key
+```
+- To run the project
+```python
+python app.py # The app should be running on port 5000
+```
