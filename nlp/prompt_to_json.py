@@ -1,4 +1,3 @@
-import json
 from langchain_openai import ChatOpenAI
 from langchain.chains import create_extraction_chain
 from dotenv import dotenv_values

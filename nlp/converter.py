@@ -1,10 +1,7 @@
 import json
-from openai import OpenAI
 from urllib.parse import quote
 from dateutil import parser
-import requests
 import string
-import datetime
 
 
 def get_city_url(city_name):

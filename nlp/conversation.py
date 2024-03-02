@@ -1,15 +1,6 @@
 import os
-import sys
 
-import openai
-from langchain.chains import ConversationalRetrievalChain, RetrievalQA
 from langchain_openai import ChatOpenAI
-from langchain_community.document_loaders import DirectoryLoader, TextLoader
-from langchain_openai import OpenAIEmbeddings
-from langchain.indexes import VectorstoreIndexCreator
-from langchain.indexes.vectorstore import VectorStoreIndexWrapper
-from langchain_community.llms import OpenAI
-from langchain_community.vectorstores import Chroma
 from langchain_core.prompts import ChatPromptTemplate
 from operator import itemgetter
 from dotenv import dotenv_values
