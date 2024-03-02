@@ -1,5 +1,12 @@
 const form = document.querySelector('.message-form');
 
+document.querySelector('textarea').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      form.dispatchEvent(new Event('submit'));
+    }
+});
+
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -14,7 +21,7 @@ form.addEventListener('submit', async (e) => {
     userMessage.classList.add('chat-message');
     userMessage.innerHTML = `
         <div class="chat-message-content user-message">
-            <p>${inputText}</p>
+            <span>${inputText}</span>
         </div>
     `;
     
@@ -41,7 +48,7 @@ form.addEventListener('submit', async (e) => {
             botMessage.classList.add('chat-message');
             botMessage.innerHTML = `
                 <div class="chat-message-content bot-message">
-                    <p>${data.message}</p>
+                    <span>${data.message}</span>
                 </div>
             `;
             chatContainer.appendChild(botMessage);
@@ -55,7 +62,7 @@ form.addEventListener('submit', async (e) => {
             botMessage.classList.add('chat-message');
             botMessage.innerHTML = `
                 <div class="chat-message-content bot-message">
-                    <p>${data.message}</p>
+                    <span>${data.message}</span>
                 </div>
             `;
             chatContainer.appendChild(botMessage);
@@ -86,10 +93,11 @@ form.addEventListener('submit', async (e) => {
             messageBlock.classList.add('bot-message');
             
             let itinerariesBlock = document.createElement('div');
+            itinerariesBlock.classList.add('itineraries-block');
 
             for (let j in segments) {
                 if (j != 0) {
-                    itinerariesBlock.innerHTML += `<p>Then</p>`
+                    itinerariesBlock.innerHTML += `<div class="divider"></div>`
                 }
                 
                 // https://content.airhex.com/content/logos/airlines_SU_100_100_s.png
@@ -100,7 +108,7 @@ form.addEventListener('submit', async (e) => {
                 const timezone = new Date().toLocaleTimeString('en-US', { timeZoneName: 'short' }).split(' ')[2];
 
                 
-                let imgLink = `<img src="https://content.airhex.com/content/logos/airlines_${segments[j]['carrierCode'].substring(0, 2)}_100_100_s.png" />`
+                let imgLink = `<img class="airline-logo" src="https://content.airhex.com/content/logos/airlines_${segments[j]['carrierCode'].substring(0, 2)}_100_100_s.png" />`
 
                 if (j > 0 && segments[j]['carrierCode'].substring(0, 2) == segments[j - 1]['carrierCode'].substring(0, 2)) {
                     imgLink = '';
@@ -127,8 +135,7 @@ form.addEventListener('submit', async (e) => {
                 `;
             }
 
-            itinerariesBlock.innerHTML += `<p>Price: ${price} USD</p>`
-            itinerariesBlock.innerHTML += `<p>Total Duration: ${totalDuration[1] ? Number(totalDuration[1]) + " hours" : ""} ${Number(totalDuration[2])} minutes</p>`
+            itinerariesBlock.innerHTML += `<div class="summary-block"><p><span class="title">Grand Price</span>: ${price} USD</p><p><span class="title">Total Duration</span>: ${totalDuration[1] ? Number(totalDuration[1]) + " hours" : ""} ${Number(totalDuration[2])} minutes</p></div>`
 
             messageBlock.appendChild(itinerariesBlock);
 

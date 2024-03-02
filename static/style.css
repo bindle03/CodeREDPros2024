@@ -10,9 +10,34 @@ p {
 .container {
     max-width: 600px;
     text-align: center;
-    height: 85vh;
+    height: 70vh;
 }
 
+.container::-webkit-scrollbar {
+    width: 0.5em;
+}
+
+
+#input-text {
+    height: 38px;
+    overflow-x: auto;
+    white-space: nowrap;
+    resize: none;
+    overflow: hidden; 
+    border: 0;
+    border-right: solid 38px rgb(255, 255, 255);
+    outline: none;
+}
+
+.divider {
+    width: 80%;
+    border-top: #000000 0.1rem solid;
+    margin: 15px auto;
+}
+
+.airline-logo {
+    margin: 3px auto;
+}
 
 .segment-time {
     opacity: 0.8;
@@ -24,8 +49,7 @@ p {
     border: 1px solid #555;
     border-radius: 5px;
     overflow-y: auto;
-    height: 70%;
-    max-height: 600px;
+    height: 90%;
     padding: 10px;
 }
 
@@ -35,10 +59,22 @@ p {
 
 .logo {
     width: 20%;
+    max-width: 70px;
 } 
 .chat-message {
     margin-bottom: 20px;
+    font-size: 75%;
+    display: flex;
+}
 
+.summary-block {
+    display: flex;
+    flex-direction: column;    
+    margin: 10px 0;
+}
+
+.title {
+    font-weight: bold;
 }
 
 .chat-message-content {
@@ -46,6 +82,8 @@ p {
     border-radius: 10px;
     max-width: 80%;
     word-wrap: break-word;
+    text-align: left;
+    display: inline-block;
 }
 
 .user-message {
@@ -93,6 +131,10 @@ p {
     /* add shadow */
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     border-radius: 10px;
+}
+
+.itineraries-block {
+    text-align: center;
 }
 
 .flight-info > p {
