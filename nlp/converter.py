@@ -14,8 +14,6 @@ def get_city_url(city_name):
 
 def date_format(date_string):
 
-    print(date_string, flush=True)
-    
     return parser.parse(date_string).strftime("%Y-%m-%d")
 
 def city_converter(city_name):

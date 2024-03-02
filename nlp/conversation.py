@@ -10,67 +10,111 @@ from langchain.indexes import VectorstoreIndexCreator
 from langchain.indexes.vectorstore import VectorStoreIndexWrapper
 from langchain_community.llms import OpenAI
 from langchain_community.vectorstores import Chroma
+from langchain_core.prompts import ChatPromptTemplate
+from operator import itemgetter
 from dotenv import dotenv_values
 
 config = dotenv_values(".env") | dotenv_values("../.env")
 
 os.environ["OPENAI_API_KEY"] = config["OPEN_API"]
 
+def history_to_string(history):
+  input = ""
+
+  for (question, answer) in history:
+    input += "User: " + question + "\nAssistant: " + answer + "\n"
+
+  return input
 
 def get_chat_output(query, chat_history = []):
 
-  loader1 = TextLoader("nlp/data/ChatBot.txt")
+  template = """
+    You are a flight assistant routing and processing the data the user input and talks in a friendly happy way. Your role is to guide the user to provide the necessary information for booking a flight. DO NOT GREET THE USER.
 
-  #   loader = DirectoryLoader("data/")
+    You will receive an input that has been passed through an NER model and will look something like this: 
+    {{
+        'departure': 'string', (This is the city the user is departing from)
+        'destination': 'string', (This is the city the user is travelling to)
+        'departure_date': 'string', (This is the date for when the user is travelling)
+        'return_date': 'string', (This is an optional field for if the user planning to have a return trip)
+        'baggage_quantity': 'integer', (The number of baggage pieces the user planning to bring)
+        'adults': 'integer' (The number of adults travelling)
+        'children': 'integer' (The number of children travelling)
+    }}
 
-  index1 = VectorstoreIndexCreator().from_loaders([loader1])
+    The fields 'departure', 'destination', and 'departure_date' are required fields so if these are not provided ask the user to provide them. The other fields are optional, but can be prompted seldomly as suggestions in a concise way.
+
+    TRAINING:
+    1. Input: {{ 'destination': 'Los Angeles', 'departure_date': '2025-01-05'}}
+    Output: "Great! I see that you've provided the destination. Can you provide me with the city you are departing from? You can also provide me with the return date if you are planning to have a return trip, or the number of travellers if you are travelling with others."
+
+    2. Input: {{'destination': 'Chicago'}}
+    Output: "Nice destination! Chicago is a bustling city. I will need your departure city and the date you are planning to travel to Chicago."
+
+    PROMPT:
+    {prompt}
+
+  """
   
+  template = ChatPromptTemplate.from_template(template)
 
-  chain1 = ConversationalRetrievalChain.from_llm(
-    llm=ChatOpenAI(model="gpt-3.5-turbo"),
-    retriever=index1.vectorstore.as_retriever(search_kwargs={"k": 1}),
-  )
-  
-  result = chain1({"question": query, 'chat_history': chat_history})
-  chat_history.append((query, result['answer']))
+  chain = ({"prompt": itemgetter("prompt")} | template | ChatOpenAI(model="gpt-3.5-turbo"))
+
+  result = chain.invoke({"prompt": query})
+
+  chat_history.append((query, result.content))
+
   return {
     'question': query,
-    'answer': result['answer'],
-    'chat_history': result['chat_history']
+    'answer': result.content,
+    'chat_history': chat_history
   }
+  
 
 def get_new_input(query, chat_history = []):
-  loader2 = TextLoader("nlp/data/InputConstructor.txt")
+  template = """
+    You are a sentence constructor using the given input. Your role is to identify the full intention of the customer who is booking a flight, so try to play as a customer
 
-  index2 = VectorstoreIndexCreator().from_loaders([loader2])
+    The input that you are going to receive is in a form of a conversation between a flight helper and a customer. It would look something like this:
 
-  chain2 = ConversationalRetrievalChain.from_llm(
-    llm=ChatOpenAI(model="gpt-3.5-turbo"),
-    retriever=index2.vectorstore.as_retriever(search_kwargs={"k": 1}),
-  )
+    User: {{'destination': New York, '2024-03-14'}}
+    Assistant: Great! I see that you've provided the destination. Can you provide me with the city you are departing from?
+    User: Houston
 
-  input = ""
+    You always have to combine the customer's intention output it strictly in the format: "I want to travel from [departing city] to [destination city] on [date of departing], returning on [date of returning] for [number of adults] adults and [number of children] children". Leave out any missing data.
 
-  for (question, answer) in chat_history:
-    input += "User: " + question + "\nAssistant: " + answer + "\n"
+    TRAINING:
+    1.
+    Input: "User: {{'destination': New York, '2024-03-14'}}
+    Assistant: Great! I see that you've provided the destination. Can you provide me with the city you are departing from?
+    User: Houston"
 
-  input += "User: " + query
+    Output: "I want to travel from Houston to New York on May 25th"
 
-  result = chain2({"question": input, 'chat_history': []})
-  return result['answer']
+    2.
+    Input: "User: {{'departure': 'Houston', 'destination': Atlanta}}
+    Assistant: Great! I see that you've provided the departure and destination. Can you provide me with time you are planning to travel?
+    User: The 25th of May"
 
-# print(get_chat_output("{'destination': 'New York', 'departure_date': '2024-03-08', 'travellers': 3}"))
+    Output: "I want to travel from Houston to Atlanta on May 25th"
 
-# print(get_new_input("Atlanta", [("{'destination': 'New York', 'departure_date': '2024-03-08', 'travellers': 3}", "I see you've provided the destination, departure date, and number of travelers. Just a friendly reminder, the departure location is also required to find the best flight offers. Could you please provide the departure location as well? Thank you!")]))
+    3.
+    Input: "User: {{ 'destination': 'Los Angeles' }}
+    Assistant: Great! I see that you've provided the destination. Can you provide me with the city you are departing from and when you will be departing? You can also provide me with the return date if you are planning to have a return trip, or the number of travellers if you are travelling with others.
+    User: I'm departing from new york in two weeks"
 
-# chat_history = []
-# while True:
-#   if not query:
-#     query = input("Prompt: ")
-#   if query in ['quit', 'q', 'exit']:
-#     sys.exit()
-#   result = chain({"question": query, "chat_history": chat_history})
-#   print(result['answer'])
+    Output: "I want to travel from New York to Los Angeles in two weeks"
 
-#   chat_history.append((query, result['answer']))
-#   query = None
+    PROMPT: 
+    {prompt}
+  """
+
+  prompt = ChatPromptTemplate.from_template(template)
+
+  chain = ({"prompt": itemgetter("prompt")} | prompt | ChatOpenAI(model="gpt-3.5-turbo"))
+
+  input = history_to_string(chat_history) + "User: " + query + "\n"
+
+  result = chain.invoke({"prompt": input})
+
+  return result.content

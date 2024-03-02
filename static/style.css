@@ -3,9 +3,14 @@ body.dark-theme {
     color: #fff;
 }
 
+p {
+    margin: 0;
+}
+
 .container {
     max-width: 600px;
     text-align: center;
+    height: 85vh;
 }
 
 
@@ -19,7 +24,7 @@ body.dark-theme {
     border: 1px solid #555;
     border-radius: 5px;
     overflow-y: auto;
-    height: 70vh;
+    height: 70%;
     max-height: 600px;
     padding: 10px;
 }
@@ -90,7 +95,18 @@ body.dark-theme {
     border-radius: 10px;
 }
 
+.flight-info > p {
+    margin: 0.2vw 0;
+    font-size: 1rem;
+}
+
 form {
     display: flex;
     flex-direction: column;
+}
+
+@media (max-width: 500px) {
+    .flight-info > p {
+        font-size: 3.5vw;
+    }
 }

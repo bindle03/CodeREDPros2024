@@ -19,6 +19,8 @@ async def send():
     input = json.loads(request.data)['inputText']
     chat_history = session.get('chat_history', [])
 
+    print(input, flush=True)
+
     if (chat_history != []):
         input = get_new_input(input, chat_history)
         print("NEW INPUT", input, flush=True)

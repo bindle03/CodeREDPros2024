@@ -46,7 +46,7 @@ async def get_best_flights(user_input, chat_history = []):
     if (not user_data.get('departure_date', None) or not user_data.get('departure', None) or not user_data.get('destination', None)):
         raise FieldException(get_chat_output(json.dumps(user_data), chat_history))
 
-    req_url_array = get_flight_url(user_data['departure'], user_data['destination'], user_data['departure_date'], user_data.get('travellers', 1))
+    req_url_array = get_flight_url(user_data['departure'], user_data['destination'], user_data['departure_date'], user_data.get('adults', 1), user_data.get('children', 0), user_data.get('return_date', None))
 
     best_flights_all = []
 

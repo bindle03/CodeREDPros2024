@@ -1,7 +1,6 @@
 const form = document.querySelector('.message-form');
 
 form.addEventListener('submit', async (e) => {
-
     e.preventDefault();
 
     const inputText = document.getElementById('input-text').value;
@@ -23,6 +22,7 @@ form.addEventListener('submit', async (e) => {
     document.getElementById('input-text').value = "";
     document.querySelector('#submit-btn').disabled = true;
     document.querySelector('.logo').src = "static/images/loading.gif"
+    chatContainer.scrollTo({top: chatContainer.scrollHeight, behavior: 'smooth'})
 
     fetch('/send', {
         method: 'POST',
@@ -87,7 +87,6 @@ form.addEventListener('submit', async (e) => {
             
             let itinerariesBlock = document.createElement('div');
 
-            itinerariesBlock.innerHTML = `<p>Total Duration: ${totalDuration[1] ? Number(totalDuration[1]) + " hours" : ""} ${Number(totalDuration[2])} minutes</p>`
             for (let j in segments) {
                 if (j != 0) {
                     itinerariesBlock.innerHTML += `<p>Then</p>`
@@ -112,16 +111,16 @@ form.addEventListener('submit', async (e) => {
                     <div class="timeline-block">
                         <div class="depart flight-info">
                             <p>Depart ${segments[j]['departure']['iataCode']}</p>
-                            <p>${formatedDeparture.getHours()}:${formatedDeparture.getMinutes() < 10 ? "0" + formatedDeparture.getMinutes() : formatedDeparture.getMinutes()} ${timezone}</p>
+                            <p>${formatedDeparture.getHours() < 10 ? "0" + formatedDeparture.getHours() : formatedDeparture.getHours()}:${formatedDeparture.getMinutes() < 10 ? "0" + formatedDeparture.getMinutes() : formatedDeparture.getMinutes()} ${timezone}</p>
                             <p>${formatedDeparture.getMonth() + 1}/${formatedDeparture.getDate()}/${formatedDeparture.getFullYear()}</p>
                         </div>
                         <div>
-                            <span style="font-size: 5rem">&#8594;</span>
+                            <span style="font-size: 5vw; max-width: 20px">&#8594;</span>
                             ${numberOfSegments > 1 ? `<p class="segment-time">${duration[1] ? Number(duration[1]) + " hours" : ""} ${Number(duration[2])} minutes</p>` : ''}
                         </div>
                         <div class="arrive flight-info">
                             <p>Arrival ${segments[j]['arrival']['iataCode']}</p>
-                            <p>${formatedArrival.getHours()}:${formatedArrival.getMinutes() < 10 ? "0" + formatedArrival.getMinutes() : formatedArrival.getMinutes()} ${timezone}</p>
+                            <p>${formatedArrival.getHours() < 10 ? "0" + formatedArrival.getHours(): formatedArrival.getHours()}:${formatedArrival.getMinutes() < 10 ? "0" + formatedArrival.getMinutes() : formatedArrival.getMinutes()} ${timezone}</p>
                             <p>${formatedArrival.getMonth() + 1}/${formatedArrival.getDate()}/${formatedArrival.getFullYear()}</p>
                         </div>        
                     </div>
@@ -129,6 +128,8 @@ form.addEventListener('submit', async (e) => {
             }
 
             itinerariesBlock.innerHTML += `<p>Price: ${price} USD</p>`
+            itinerariesBlock.innerHTML += `<p>Total Duration: ${totalDuration[1] ? Number(totalDuration[1]) + " hours" : ""} ${Number(totalDuration[2])} minutes</p>`
+
             messageBlock.appendChild(itinerariesBlock);
 
             botMessage.appendChild(messageBlock);
@@ -136,10 +137,49 @@ form.addEventListener('submit', async (e) => {
 
             document.querySelector('#submit-btn').disabled = false;
             document.querySelector('.logo').src = "static/images/vpt_logo.jpg"
-
+            chatContainer.scrollTo({top: chatContainer.scrollHeight, behavior: 'smooth'})
+            
         }
+
     })
     .catch((error) => {
         console.error('Error:', error);
     });
-})
+    chatContainer.scrollTo({top: chatContainer.scrollHeight, behavior: 'smooth'})
+    
+});
+
+
+const recognition = new webkitSpeechRecognition();
+recognition.continuous = true;
+recognition.interimResults = true;
+recognition.lang = 'en-US';
+
+recognition.onresult = (event) => {
+    if (event.results[0][0].cofidence < 0.7) {
+        return
+    }
+    
+    document.getElementById('input-text').value = (event.results[0][0].transcript)
+}
+
+const mic = document.getElementById('mic');
+const micOff = async () => {
+    mic.setAttribute('status', 'off');
+    mic.classList.add('fa-microphone');
+    mic.classList.remove('fa-microphone-slash');
+    recognition.stop();
+}
+
+const micOn = async () => {
+    mic.setAttribute('status', 'on');
+    mic.classList.add('fa-microphone-slash');
+    mic.classList.remove('fa-microphone');
+    recognition.start();
+}
+
+mic.addEventListener('click', () => {
+    document.getElementById('mic').getAttribute('status') === 'off' ? micOn() : micOff();
+});
+
+
