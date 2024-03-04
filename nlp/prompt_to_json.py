@@ -10,30 +10,37 @@ schema = {
     "properties": {
         "departure": {
             "type": "string", 
-            "description": "The name of the city that the user is departing from, leave out if not provided"
+            "description": "The name of the city that the user is departing from make sure that it is a valid city, leave out if not provided"
         },
         "destination": {
             "type": "string", 
-            "description": "This name of the city that the user is travelling to, leave out if not provided"
+            "description": "This name of the city that the user is travelling to make sure that it is a valid city, leave out if not provided"
         },
         "departure_date": {
             "type": "string", 
-            "description": "Today's date is " + str(datetime.date.today()) + " the format should be YYYY-MM-DD"
+            "description": "Today's date is " + str(datetime.date.today()) + " the format should be YYYY-MM-DD, if the date is in the past, leave out. Be aware of seasons time, Spring is from March 20 to June 20, Summer is from June 21 to September 21, Fall is from September 22 to December 20, and Winter is from December 21 to March 19."
         },
         "return_date": {
             "type": "string", 
-            "description": "Today's date is " + str(datetime.date.today()) + " the format should be YYYY-MM-DD"
+            "description": "Today's date is " + str(datetime.date.today()) + " the format should be YYYY-MM-DD, if the date is in the past, leave out"
         },
         "baggage_quantity": {
             "type": "integer"
         },
         "adults": {
-            "type": "integer", "description": "The number of adults travelling with you, if not specified it will be assumed to be 1."
+            "type": "integer", "description": "the number of adult travelers (age 12 or older on date of departure), remmember to account for the prompting user. If not specified, the default value is 1. If specified, this number should be greater than or equal to 1."
         },
         "children": {
-            "type": "integer", "description": "The number of children travelling with you"
-        }
+            "type": "integer", "description": "the number of child travelers (older than age 2 and younger than age 12 on date of departure) who will each have their own separate seat. If specified, this number should be greater than or equal to 0"
+        },
+        "infants": {
+            "type": "integer", "description": "the number of infant travelers (whose age is less or equal to 2 on date of departure). Infants travel on the lap of an adult traveler, and thus the number of infants must not exceed the number of adults. If specified, this number should be greater than or equal to 0"
+        },
+        "non_stop": {
+            "type": "boolean", "description": "if the user want the fastest flights, this should be true, something like 'urgently' or 'quickly'. Otherwise, the user is open to flights with layovers"
+        },
     },
+    "required" : ["adults", "children", "infants"],
 }
 
 

@@ -18,7 +18,7 @@ async def get_token():
 
     return response.json()['access_token']
 
-def get_flight_url(departure_city, destination_city, departure_date, adults = 1, children = 0, return_date = None):
+def get_flight_url(departure_city, destination_city, departure_date, adults = 1, children = 0, infants = 0, return_date = None, non_stop = False):
     departure_id_array = city_converter(departure_city)
 
     destination_id_array = city_converter(destination_city)
@@ -28,10 +28,11 @@ def get_flight_url(departure_city, destination_city, departure_date, adults = 1,
     url_array = []
     for departure_id in departure_id_array:
         for destination_id in destination_id_array:
-            url = f"https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode={departure_id}&destinationLocationCode={destination_id}&departureDate={departure_date}&adults={adults}&currencyCode=USD&nonStop=false&max=5"
+            url = f"https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode={departure_id}&destinationLocationCode={destination_id}&departureDate={departure_date}&adults={adults}&currencyCode=USD&max=5"
             if (return_date): url += f"&returnDate={return_date}"
             if (children): url += f"&children={children}"
-
+            if (infants): url += f"&infants={infants}"
+            if (non_stop): url += f"&nonStop=true"
 
             url_array.append(url)
 
@@ -46,7 +47,7 @@ async def get_best_flights(user_input, chat_history = []):
     if (not user_data.get('departure_date', None) or not user_data.get('departure', None) or not user_data.get('destination', None)):
         raise FieldException(get_chat_output(json.dumps(user_data), chat_history))
 
-    req_url_array = get_flight_url(user_data['departure'], user_data['destination'], user_data['departure_date'], user_data.get('adults', 1), user_data.get('children', 0), user_data.get('return_date', None))
+    req_url_array = get_flight_url(user_data['departure'], user_data['destination'], user_data['departure_date'], user_data.get('adults', 1), user_data.get('children', 0), user_data.get('infants', 0), user_data.get('return_date', None), user_data.get('non_stop', False))
 
     best_flights_all = []
 
@@ -65,4 +66,7 @@ async def get_best_flights(user_input, chat_history = []):
             print("Error: 'data' key not found in the response JSON")
 
 
-    return best_flights_all
+    return {
+        "requests": user_data,
+        "best_flights": best_flights_all
+    }

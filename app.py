@@ -19,14 +19,11 @@ async def send():
     input = json.loads(request.data)['inputText']
     chat_history = session.get('chat_history', [])
 
-    print(input, flush=True)
-
-    if (chat_history != []):
-        input = get_new_input(input, chat_history)
-        print("NEW INPUT", input, flush=True)
+    input = get_new_input(input, chat_history)
+    print("NEW INPUT", input, flush=True)
 
     try:
-        best_flights = await get_best_flights(input, chat_history)
+        processed = await get_best_flights(input, chat_history)
     except FieldException as e:
         # print("Field exception", e, flush=True)
 
@@ -35,7 +32,6 @@ async def send():
         print('HISTORY', chat_history, flush=True)
 
         return jsonify({
-            'ok': True,
             'missing': True,
             'message': e.data.get('answer')
         })
@@ -43,8 +39,15 @@ async def send():
     print(session.get('chat_history'), flush=True)
     session.clear()
 
+    best_flights = processed['best_flights']
+
     print(len(best_flights), flush=True)
 
+    if not len(best_flights):
+        return {
+            'missing': True,
+            'message': "Seems like I can not find any flights from my database for your request. Can you try a different place?"
+        }
     best_flights = sorted(best_flights, key=lambda x: float(x['price']['grandTotal']))
 
 
@@ -53,6 +56,7 @@ async def send():
         'ok': True,
         'missing': False,
         'best_flights': best_flights[:10],
+        'requests': processed['requests']
     })
 
 if __name__ == '__main__':

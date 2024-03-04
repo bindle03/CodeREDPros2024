@@ -1,5 +1,60 @@
 const form = document.querySelector('.message-form');
 
+const Flight = (flight) => {
+    let segments = flight['segments'];
+    let numberOfSegments = segments.length;
+    const totalDuration = flight['duration'].match(/^PT(?:([0-9]+)H)?(?:([0-9]+)M)?$/);
+
+    
+    let itinerariesBlock = document.createElement('div');
+    itinerariesBlock.classList.add('itineraries-block');
+
+    for (let j in segments) {
+        if (j != 0) {
+            itinerariesBlock.innerHTML += `<div class="divider"></div>`
+        }
+        
+        // https://content.airhex.com/content/logos/airlines_SU_100_100_s.png
+
+        const formatedDeparture = new Date(segments[j]['departure']['at'])
+        const formatedArrival = new Date(segments[j]['arrival']['at'])
+        const duration = segments[j]['duration'].match(/^PT(?:([0-9]+)H)?(?:([0-9]+)M)?$/);
+        const timezone = new Date().toLocaleTimeString('en-US', { timeZoneName: 'short' }).split(' ')[2];
+
+        
+        let imgLink = `<img class="airline-logo" src="https://content.airhex.com/content/logos/airlines_${segments[j]['carrierCode'].substring(0, 2)}_100_100_s.png" />`
+
+        if (j > 0 && segments[j]['carrierCode'].substring(0, 2) == segments[j - 1]['carrierCode'].substring(0, 2)) {
+            imgLink = '';
+        }
+
+        itinerariesBlock.innerHTML += `
+            ${imgLink}
+            <div class="timeline-block">
+                <div class="depart flight-info">
+                    <p>Depart ${segments[j]['departure']['iataCode']}</p>
+                    <p>${formatedDeparture.getHours() < 10 ? "0" + formatedDeparture.getHours() : formatedDeparture.getHours()}:${formatedDeparture.getMinutes() < 10 ? "0" + formatedDeparture.getMinutes() : formatedDeparture.getMinutes()} ${timezone}</p>
+                    <p>${formatedDeparture.getMonth() + 1}/${formatedDeparture.getDate()}/${formatedDeparture.getFullYear()}</p>
+                </div>
+                <div>
+                    <span style="font-size: 5vw; max-width: 20px">&#8594;</span>
+                    ${numberOfSegments > 1 ? `<p class="segment-time">${duration[1] ? Number(duration[1]) + " hours " : ""}${duration[2] ? Number(duration[2]) + " minutes"  : ""} </p>` : ''}
+                </div>
+                <div class="arrive flight-info">
+                    <p>Arrival ${segments[j]['arrival']['iataCode']}</p>
+                    <p>${formatedArrival.getHours() < 10 ? "0" + formatedArrival.getHours(): formatedArrival.getHours()}:${formatedArrival.getMinutes() < 10 ? "0" + formatedArrival.getMinutes() : formatedArrival.getMinutes()} ${timezone}</p>
+                    <p>${formatedArrival.getMonth() + 1}/${formatedArrival.getDate()}/${formatedArrival.getFullYear()}</p>
+                </div>        
+            </div>
+        `;
+    }
+
+    itinerariesBlock.innerHTML += `<p style="margin:3px 0"><span class="title">Total Duration</span>: ${totalDuration[1] ? Number(totalDuration[1]) + " hours " : ""}${totalDuration[2] ? Number(totalDuration[2]) + " minutes" : ""}</p>`
+
+    return itinerariesBlock;
+}
+
+
 document.querySelector('textarea').addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -83,61 +138,23 @@ form.addEventListener('submit', async (e) => {
             // Cast price to a number
             let price = data[i]['price']['grandTotal'];
             
-            let segments = data[i]['itineraries'][0]['segments'];
-            let numberOfSegments = segments.length;
-            const totalDuration = data[i]['itineraries'][0]['duration'].match(/^PT(?:([0-9]+)H)?(?:([0-9]+)M)?$/);
-            
             
             const messageBlock = document.createElement('div');
             messageBlock.classList.add('chat-message-content');
             messageBlock.classList.add('bot-message');
             
-            let itinerariesBlock = document.createElement('div');
-            itinerariesBlock.classList.add('itineraries-block');
 
-            for (let j in segments) {
-                if (j != 0) {
-                    itinerariesBlock.innerHTML += `<div class="divider"></div>`
-                }
-                
-                // https://content.airhex.com/content/logos/airlines_SU_100_100_s.png
-
-                const formatedDeparture = new Date(segments[j]['departure']['at'])
-                const formatedArrival = new Date(segments[j]['arrival']['at'])
-                const duration = segments[j]['duration'].match(/^PT(?:([0-9]+)H)?(?:([0-9]+)M)?$/);
-                const timezone = new Date().toLocaleTimeString('en-US', { timeZoneName: 'short' }).split(' ')[2];
-
-                
-                let imgLink = `<img class="airline-logo" src="https://content.airhex.com/content/logos/airlines_${segments[j]['carrierCode'].substring(0, 2)}_100_100_s.png" />`
-
-                if (j > 0 && segments[j]['carrierCode'].substring(0, 2) == segments[j - 1]['carrierCode'].substring(0, 2)) {
-                    imgLink = '';
-                }
-
-                itinerariesBlock.innerHTML += `
-                    ${imgLink}
-                    <div class="timeline-block">
-                        <div class="depart flight-info">
-                            <p>Depart ${segments[j]['departure']['iataCode']}</p>
-                            <p>${formatedDeparture.getHours() < 10 ? "0" + formatedDeparture.getHours() : formatedDeparture.getHours()}:${formatedDeparture.getMinutes() < 10 ? "0" + formatedDeparture.getMinutes() : formatedDeparture.getMinutes()} ${timezone}</p>
-                            <p>${formatedDeparture.getMonth() + 1}/${formatedDeparture.getDate()}/${formatedDeparture.getFullYear()}</p>
-                        </div>
-                        <div>
-                            <span style="font-size: 5vw; max-width: 20px">&#8594;</span>
-                            ${numberOfSegments > 1 ? `<p class="segment-time">${duration[1] ? Number(duration[1]) + " hours" : ""} ${Number(duration[2])} minutes</p>` : ''}
-                        </div>
-                        <div class="arrive flight-info">
-                            <p>Arrival ${segments[j]['arrival']['iataCode']}</p>
-                            <p>${formatedArrival.getHours() < 10 ? "0" + formatedArrival.getHours(): formatedArrival.getHours()}:${formatedArrival.getMinutes() < 10 ? "0" + formatedArrival.getMinutes() : formatedArrival.getMinutes()} ${timezone}</p>
-                            <p>${formatedArrival.getMonth() + 1}/${formatedArrival.getDate()}/${formatedArrival.getFullYear()}</p>
-                        </div>        
-                    </div>
-                `;
+        
+            if (data[i]['itineraries'].length > 1) {
+                messageBlock.innerHTML += `<p class="headings"><span class="title">Outgoing Flight</span></p>`
+            }
+            messageBlock.appendChild(Flight(data[i]['itineraries'][0]));
+            if (data[i]['itineraries'].length > 1) {
+                messageBlock.innerHTML += `<p class="headings" style="border-top: solid 4px black"><span class="title">Return Flight</span></p>`
+                messageBlock.appendChild(Flight(data[i]['itineraries'][1]));
             }
 
-            itinerariesBlock.innerHTML += `<div class="summary-block"><p><span class="title">Grand Price</span>: ${price} USD</p><p><span class="title">Total Duration</span>: ${totalDuration[1] ? Number(totalDuration[1]) + " hours" : ""} ${Number(totalDuration[2])} minutes</p></div>`
-
-            messageBlock.appendChild(itinerariesBlock);
+            messageBlock.innerHTML += `<p style="text-align: center; font-size: 1rem"><span class="title">Grand Total: </span>${price} USD</p>`
 
             botMessage.appendChild(messageBlock);
             chatContainer.appendChild(botMessage);
@@ -162,14 +179,6 @@ recognition.continuous = true;
 recognition.interimResults = true;
 recognition.lang = 'en-US';
 
-recognition.onresult = (event) => {
-    if (event.results[0][0].cofidence < 0.7) {
-        return
-    }
-    
-    document.getElementById('input-text').value = (event.results[0][0].transcript)
-}
-
 const mic = document.getElementById('mic');
 const micOff = async () => {
     mic.setAttribute('status', 'off');
@@ -179,14 +188,23 @@ const micOff = async () => {
 }
 
 const micOn = async () => {
+    document.getElementById('input-text').innerText = "";
     mic.setAttribute('status', 'on');
     mic.classList.add('fa-microphone-slash');
     mic.classList.remove('fa-microphone');
     recognition.start();
 }
 
-mic.addEventListener('click', () => {
+document.querySelector('.overlay').addEventListener('click', () => {
     document.getElementById('mic').getAttribute('status') === 'off' ? micOn() : micOff();
 });
 
+recognition.onresult = (event) => {
+    if (event.results[0][0].cofidence < 0.7) {
+        return
+    }
+    
+
+    document.getElementById('input-text').value = (event.results[0][0].transcript)
+}
 

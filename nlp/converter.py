@@ -4,11 +4,6 @@ from dateutil import parser
 import string
 
 
-def get_city_url(city_name):
-    url_encode = quote(city_name)
-    
-    return f"https://test.api.amadeus.com/v1/reference-data/locations?subType=CITY&keyword={url_encode}&page%5Blimit%5D=10&page%5Boffset%5D=0&sort=analytics.travelers.score&view=FULL"
-
 def date_format(date_string):
 
     return parser.parse(date_string).strftime("%Y-%m-%d")
