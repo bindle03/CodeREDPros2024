@@ -2,6 +2,8 @@
 
 <img src="https://github.com/bindle03/CodeREDPros2024/blob/main/vpt-gallery.jpg">
 
+<img src="https://github.com/bindle03/CodeREDPros2024/blob/main/vpt-demo.png">
+
 # What It Does
 - Create an airline chatbox that when the users type in their cirtiria, it going to look up the suitable flight for them.
 - Extract users' input to JSON file using OpenAI.
@@ -19,7 +21,7 @@
 - Back-end: Flask (Python).
 - APIs: OpenAI, Amadeus.
 
-# Pipeline of Our Project
+<img src="https://github.com/bindle03/CodeREDPros2024/blob/main/Pipeline.png">
 
 
 # Challenges
