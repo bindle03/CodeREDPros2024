@@ -7,6 +7,7 @@ from dotenv import dotenv_values
 
 config = dotenv_values(".env") | dotenv_values("../.env")
 
+
 os.environ["OPENAI_API_KEY"] = config["OPEN_API"]
 
 def history_to_string(history):
@@ -76,7 +77,7 @@ def get_new_input(query, chat_history = []):
 
     You always have to combine the customer's intention output it strictly in the format: "I want to travel from [departing city] to [destination city] on [date of departing], returning on [date of returning] with [number of adults] adults, [number of children] children, and [number of infants], and [travelling nonstop or not]". Leave out any missing data.
 
-    The departure city and destination city has to be different, and the date of departing also has to be different from the date of returning.
+    The departure city and destination city has to be different, and the date of departing also has to be different from the date of returning. For departure and destination, if a state in the US or a country is provided, put the capital city or the most popular city of that state or country.
 
     TRAINING:
     1.
@@ -133,7 +134,20 @@ def get_new_input(query, chat_history = []):
     Input: "User: I want to go to new york as fast as possible next week and return two days later"
 
     Output: "I want to travel to New York next week and return two days later with the fastest flight possible."
+
+    10.
+    Input: "User: I want to travel from Houston to Dallas tomorrow"
+
+    Output: "I want to travel from Houston to Dallas tomorrow"
+
+    11.
+    Input: "User: {{ 'destination': 'Edinburgh' }}
+    Assistant: "Edinburgh is a very popular city in the UK. Can you provide me with the city you are departing from and when you will be departing for me to find the flights?
+    User: I need to depart from Texas in two weeks"
+
+    Output: "I want to travel from Austin to Edinburgh in two weeks"
     
+
     PROMPT: 
     {prompt}
   """

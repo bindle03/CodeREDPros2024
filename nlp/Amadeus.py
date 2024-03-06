@@ -7,6 +7,9 @@ class FieldException(Exception):
     def __init__(self, data):
         self.data = data
 
+class AmadeusException(Exception):
+    pass
+
 async def get_token():
     url = "https://test.api.amadeus.com/v1/security/oauth2/token"
     payload = f"grant_type=client_credentials&client_id=4Cz3Xv8iQ4o4yl3LpGxXQqMbADgvt3E7&client_secret=tK1jdQ2N4JpdV8fR"
@@ -59,11 +62,8 @@ async def get_best_flights(user_input, chat_history = []):
         
         if 'data' in response_flight.json():
             best_flights_all += response_flight.json()['data']
-
-
         else:
-            print(response_flight.json())
-            print("Error: 'data' key not found in the response JSON")
+            raise AmadeusException(response_flight.get('details', 'Unknown error'))
 
 
     return {

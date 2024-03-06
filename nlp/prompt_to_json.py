@@ -1,10 +1,12 @@
 from langchain_openai import ChatOpenAI
 from langchain.chains import create_extraction_chain
 from dotenv import dotenv_values
-
+import os
 import datetime
 
 config = dotenv_values(".env") | dotenv_values("../.env")
+
+os.environ["OPENAI_API_KEY"] = config["OPEN_API"]
 
 schema = {
     "properties": {
@@ -56,15 +58,16 @@ def extract_to_json(userInput) -> dict[str, any]:
     #     return_date: Optional[str]
 
     print("Extracting to JSON...", flush=True)
-    chain = create_extraction_chain(schema, llm=ChatOpenAI(openai_api_key=config['OPEN_API'], model="gpt-3.5-turbo"))
+    chain = create_extraction_chain(schema, llm=ChatOpenAI(model="gpt-3.5-turbo"))
 
     try:
         res = chain.invoke(userInput)
     except Exception as e:
         print(e, flush=True)
+    
+    print(res['text'], flush=True)
 
     if (type(res['text']) == list) : return res['text'][0]
 
-    print(res['text'], flush=True)
 
     return res['text']

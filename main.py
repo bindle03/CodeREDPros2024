@@ -18,11 +18,11 @@ def home():
 
 @app.route('/send', methods=['POST'])
 async def send():
-    input = json.loads(request.data)['inputText']
+    raw_input = json.loads(request.data)['inputText']
     chat_history = session.get('chat_history', [])
 
-    input = get_new_input(input, chat_history)
-    print("NEW INPUT", input, flush=True)
+    input = get_new_input(raw_input, chat_history)
+    print(raw_input, "NEW INPUT", input, flush=True)
 
     try:
         processed = await get_best_flights(input, chat_history)
@@ -31,24 +31,26 @@ async def send():
 
         session['chat_history'] = e.data.get('chat_history')
 
-        print('HISTORY', chat_history, flush=True)
-
         return jsonify({
             'missing': True,
             'message': e.data.get('answer')
         })
+    except AmadeusException as e:
+        session['chat_history'] = []
 
-    print(session.get('chat_history'), flush=True)
+        return jsonify({
+            'missing': True,
+            'message': e.message
+        })
+
     session.clear()
 
     best_flights = processed['best_flights']
 
-    print(len(best_flights), flush=True)
-
     if not len(best_flights):
         return {
             'missing': True,
-            'message': "Seems like I can not find any flights from my database for your request. Can you try a different place?"
+            'message': "Seems like I can not find any flights from my database for your request. Can you try a different request?"
         }
     best_flights = sorted(best_flights, key=lambda x: float(x['price']['grandTotal']))
 
