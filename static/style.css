@@ -14,9 +14,9 @@ p {
 }
 
 .container {
-    max-width: 600px;
+    max-width: 950px;
     text-align: center;
-    height: 70vh;
+    height: 85vh;
 }
 
 .container::-webkit-scrollbar {
@@ -150,5 +150,9 @@ form {
 @media (max-width: 500px) {
     .flight-info > p {
         font-size: 3.5vw;
+    }
+
+    .container {
+        height: 75vh;
     }
 }
