@@ -1,6 +1,6 @@
 # CodeREDPros2024
 
-<img src="https://github.com/bindle03/CodeREDPros2024/blob/main/vpt-gallery.jpg" width="500" height="500">
+<img src="https://github.com/bindle03/CodeREDPros2024/blob/main/vpt-gallery.jpg" width="1920" height="1080">
 
 # What It Does
 - Create an airline chatbox that when the users type in their cirtiria, it going to look up the suitable flight for them.
