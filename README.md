@@ -9,7 +9,7 @@
 # Tools of Developments
 - Front-end: HTML/CSS.
 - Back-end: Flask (Python).
-- APIs: OpenAI, Amedeus.
+- APIs: OpenAI, Amadeus.
 
 # Challenges
 - Convert the input cities to their airport code.
@@ -17,7 +17,7 @@
 - Handle the front-end input to make an understandable JSON file in the back-end for further generation.
 
 # Accomplishments
-- Create a functioning chatbox website with applealing UI
+- Create a functioning chatbox website with appealing UI
 - Manage large flights dataset in order to give an appropriate response.
 - Implement a feature that transfer speech to text input.
 
