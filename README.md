@@ -9,12 +9,16 @@
 # Look at our Project now:
 - Devpost: https://devpost.com/software/vpt-nlp-for-flight-booking
 - Demo: https://www.youtube.com/watch?v=fDNwpJHFoFQ&feature=youtu.be
-- Our app on Google Cloud Platform: coderedpros2024-kxh4l6ww2a-uc.a.run.app
+- Our app on Google Cloud Platform: coderedpros2024-kxh4l6ww2a-uc.a.run.app (Still limited, slow response)
+- Presentation of our project: https://docs.google.com/presentation/d/1n8TVsf2uRkuM_XLk6rV68kIzo7Ub7rWpxZhKvM_UQb0/edit#slide=id.p1
 
 # Tools of Developments
 - Front-end: HTML/CSS.
 - Back-end: Flask (Python).
 - APIs: OpenAI, Amadeus.
+
+# Pipeline of Our Project
+
 
 # Challenges
 - Convert the input cities to their airport code.
