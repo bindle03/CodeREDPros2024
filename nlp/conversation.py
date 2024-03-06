@@ -133,7 +133,7 @@ def get_new_input(query, chat_history = []):
     Input: "User: I want to go to new york as fast as possible next week and return two days later"
 
     Output: "I want to travel to New York next week and return two days later with the fastest flight possible."
-
+    
     PROMPT: 
     {prompt}
   """

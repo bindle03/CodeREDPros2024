@@ -3,6 +3,8 @@ from flask import Flask, render_template, jsonify, request, session
 from nlp.Amadeus import *
 import dotenv
 
+import os
+
 app = Flask(__name__)
 app.secret_key = 'secret'
 
