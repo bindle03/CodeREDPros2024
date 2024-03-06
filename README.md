@@ -1,12 +1,14 @@
 # CodeREDPros2024
 
+<img src="https://https://github.com/bindle03/CodeREDPros2024/blob/main/vpt-gallery.jpg" width="500" height="500">
+
 # What It Does
 - Create an airline chatbox that when the users type in their cirtiria, it going to look up the suitable flight for them.
 - Extract users' input to JSON file using OpenAI.
 - Insert the JSON file to Amadeus API to generate the matching results to another JSON file.
 - Use OpenAI to convert the result JSON file back to NLP and output the answer to the users.
 
-# Look at our Project now:
+# Look At Our Project Now
 - Devpost: https://devpost.com/software/vpt-nlp-for-flight-booking
 - Demo: https://www.youtube.com/watch?v=fDNwpJHFoFQ&feature=youtu.be
 - Our app on Google Cloud Platform: coderedpros2024-kxh4l6ww2a-uc.a.run.app (Still limited, slow response)
